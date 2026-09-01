@@ -6,24 +6,29 @@
 ![PR CI status](https://github.com/MetOffice/dagrunner/actions/workflows/tests.yml/badge.svg)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-# <img src="docs/logo.svg" alt="dagrunner_icon" width=200px>![](https://placehold.co/600x200/transparent/929292?text=DAGrunner)
+<img src="docs/logo.svg" alt="dagrunner_icon" width=200px>
+<svg xmlns="http://www.w3.org/2000/svg" width="335" height="200" viewBox="0 -60 335 200">
+  <text
+    x="10"
+    y="60"
+    font-size="60"
+    font-weight="700"
+    fill="#929292">
+    DAGrunner
+  </text>
+</svg>
 
-DAGrunner is an abstraction layer for executing Directed Acyclic Graphs (DAGs), providing portability and standardization across different schedulers. Rather than building your graph execution logic around a specific scheduler (such as [Dask](https://www.dask.org/) or [Ray](https://docs.ray.io/en/latest/index.html)), DAGrunner enables you to define your graph once in [NetworkX](https://networkx.org/en/) format and execute it with any supported scheduler without modifying your underlying graph definition. It decouples the scientific configuration and graph recipe from execution concerns, ensuring that your graph remains independent of scheduling technology choices. Additionally, DAGrunner provides a unified tooling layer that includes scheduler-agnostic graph visualization, scheduler-independent logging and monitoring, and other operational utilities, allowing you to maintain consistent workflows regardless of which back-end scheduler you choose.
+DAGrunner provides an abstraction layer between an execution Directed Acyclic Graph (DAG) and the scheduler used to run it. Rather than coupling workflows to scheduler-specific APIs and execution models, DAGrunner represents execution graphs as [NetworkX](https://networkx.org/en/) graphs that can be executed using any supported back end, such as [Dask](https://www.dask.org/) or [Ray](https://docs.ray.io/en/latest/index.html). This separation of concerns allows scheduling technologies to evolve or be replaced without requiring changes to the workflow graph, making the approach valuable regardless of future orchestration frameworks or execution technologies.
+
+Beyond its core abstraction layer, DAGrunner provides scheduler-agnostic tooling for graph visualisation, logging, monitoring, and fault handling, including support for recovery from execution failures. It also includes abstract classes for common application patterns such as data loading and polling, and standardises event handling during graph execution. Together, these capabilities simplify application development, provide a consistent user experience across schedulers, and avoid scheduler-specific implementations.
 
 ## Documentation
 
-DAGrunner takes advantage of the native markdown rendering support provided by github.  To that end, all documentation of DAGrunner resides in markdown files.
+DAGrunner documentation is written in markdown so it renders natively on GitHub and in popular IDEs. Reference documentation is generated from the codebase as markdown via [docs/gen_docs](docs/gen_docs). These generated docs are built automatically in continuous integration and should not be included in code changes.
 
-## API
+## API reference
 
 See [DAGrunner API](docs/_build/dagrunner_index.md)
-
-## License/copyright
-
-(C) Crown Copyright, Met Office. All rights reserved.
-
-This file is part of 'DAGrunner' and is released under the BSD 3-Clause license.
-See LICENSE in the root of the repository for full licensing details.
 
 ## Installation
 
@@ -36,8 +41,9 @@ pip install .
 
 This will also make an executable script available to the PATH: `dagrunner-execute-graph`
 
-## Execution of a networkx graph using `dagrunner-execute-graph` script
+## Execution of a networkx graph using the `dagrunner-execute-graph` script
 
+Thought you can execute your graphs by interacting with the DAGrunner library within your interactive Python shell, typically it is assumed to be more useful to utilise the script provided:
 ```
 usage: dagrunner-execute-graph [-h] [--scheduler SCHEDULER] [--num-workers NUM_WORKERS] [--profiler-filepath PROFILER_FILEPATH] [--dry-run] [--verbose] networkx-graph
 ```
@@ -47,10 +53,10 @@ see `dagrunner-execute-graph --help` for more information.
 
 See [docs/demo.ipynb](docs/demo.ipynb)
 
-## Processing modules (aka plugins)
+## Processing modules (aka applications)
 
-DAGrunner concerns itself with graph execution and does not strictly require processing modules (plugins) to take any particular form.  That is, you may or may not choose to use or subclass the plugins provided by DAGrunner.
-However, for convenience, DAGrunner does define some plugins which fall into two broad categories, some abstract and some for use as they are.
+DAGrunner concerns itself with graph execution and does not strictly require node execution to take any particular form.  That is, you may or may not choose to use or subclass the plugins provided by DAGrunner.
+However, for convenience, DAGrunner does define some classes which fall into two broad categories, some abstract and some for use as they are.
 
 See [here](docs/_build/dagrunner.plugin_framework.md) for more information.
 
@@ -67,11 +73,52 @@ See [logger](docs/_build/dagrunner.utils.logger.md) for more information.
 
 ## Logo
 
-Colour:
+Colour: | B&W:
+--- | ---
+<img src="docs/logo.svg" alt="dagrunner_icon" width=100px> | <img src="docs/logo_bw.svg" alt="dagrunner_icon" width=100px>
 
-<img src="docs/logo.svg" alt="dagrunner_icon" width=100px>
+## FAQ
 
- B&W:
+### Why NetworkX?
+[NetworkX](https://networkx.org/en/) is as close to a standard in python graph representation as there is.
 
-<img src="docs/logo_bw.svg" alt="dagrunner_icon" width=100px>
+### Why not Prefect/Dagster/Apache Airflow/Luigi, etc.?
+DAGrunner is neither a scheduler nor an orchestration engine. Instead, it provides an abstraction layer that decouples the execution graph from the technology used to execute it. Prefect, Dagster, Airflow and Luigi solve a different problem: they are orchestration frameworks, whereas DAGrunner is intended to remain independent of any particular orchestration or scheduling solution.
 
+### What do I need to execute my graph with DAGrunner?
+
+- A Python environment containing NetworkX and a supported scheduler (see [schedulers](#schedulers)).
+- A graph consisting of nodes, their associated attributes (collectively referred to as settings), and edges defining the connectivity between them.
+
+The example below defines a simple graph that starts with a node returning 0, passes the result to a node that adds 2, and then to a final node that adds 5, producing a final result of 7:
+
+```python
+def add(*arg, const=0):
+    return sum(arg) + const
+
+node0 = 'a'
+node1 = 'b'
+node2 = 'c'
+
+settings = {
+    node0: {'call': (lambda : 0,)}
+    node1: {'call': (add, const=2)}
+    node2: {'call': (add, const=5)}
+}
+edges = [
+    [node0, node1],
+    [node1, node2],
+]
+
+graph = ExecuteGraph((edges, settings))
+graph()
+```
+
+While this example is intentionally simple, node execution logic can be arbitrarily complex. See [Example DAGrunner usage](#example-dagrunner-usage) for more advanced examples.
+
+## License/copyright
+
+(C) Crown Copyright, Met Office. All rights reserved.
+
+This file is part of 'DAGrunner' and is released under the BSD 3-Clause license.
+See LICENSE in the root of the repository for full licensing details.
