@@ -43,6 +43,8 @@ see `dagrunner-execute-graph --help` for more information.
 
 See [docs/demo.ipynb](docs/demo.ipynb)
 
+Also, take a look at the [FAQ](#what-do-i-need-to-execute-my-graph-with-dagrunner?) for a quick-start example.
+
 ## Processing modules (aka applications)
 
 DAGrunner concerns itself with graph execution and does not strictly require node execution to take any particular form.  That is, you may or may not choose to use or subclass the plugins provided by DAGrunner.
@@ -60,12 +62,6 @@ These range from [dask](https://www.dask.org/), [ray](https://docs.ray.io/en/lat
 
 DAGrunner provides a script `dagrunner-logger` for running a TCP server.  This enables logging to function across the network.  Additionally, it will write logs to an sqlite database to aid in realtime monitoring from external tools.
 See [logger](docs/_build/dagrunner.utils.logger.md) for more information.
-
-## Logo
-
-Colour: | B&W:
---- | ---
-<img src="docs/logo.svg" alt="dagrunner_icon" width=100px> | <img src="docs/logo_bw.svg" alt="dagrunner_icon" width=100px>
 
 ## FAQ
 
@@ -105,6 +101,16 @@ graph()
 ```
 
 While this example is intentionally simple, node execution logic can be arbitrarily complex. See [Example DAGrunner usage](#example-dagrunner-usage) for more advanced examples.
+
+## Logo
+
+Colour: | B&W: | Title:
+--- | --- | ---
+<img src="docs/logo.svg" alt="dagrunner_icon" height=90px> | <img src="docs/logo_bw.svg" alt="dagrunner_icon" height=90px> | <img src="docs/logo_title.svg" alt="dagrunner_icon" width=200px>
+
+Colour + title: | B&W + title:
+--- | ---
+<img src="docs/logo_wtitle.svg" alt="dagrunner_icon" height=90px> | <img src="docs/logo_bw_wtitle.svg" alt="dagrunner_icon" height=90px>
 
 ## License/copyright
 
