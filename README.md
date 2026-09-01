@@ -43,7 +43,7 @@ see `dagrunner-execute-graph --help` for more information.
 
 See [docs/demo.ipynb](docs/demo.ipynb)
 
-Also, take a look at the [FAQ](#what-do-i-need-to-execute-my-graph-with-dagrunner?) for a quick-start example.
+Also, take a look at the [FAQ](FAQ.md#what-do-i-need-to-execute-my-graph-with-dagrunner) for a quick-start example.
 
 ## Processing modules (aka applications)
 
@@ -65,42 +65,7 @@ See [logger](docs/_build/dagrunner.utils.logger.md) for more information.
 
 ## FAQ
 
-### Why NetworkX?
-[NetworkX](https://networkx.org/en/) is as close to a standard in python graph representation as there is.
-
-### Why not Prefect/Dagster/Apache Airflow/Luigi, etc.?
-DAGrunner is neither a scheduler nor an orchestration engine. Instead, it provides an abstraction layer that decouples the execution graph from the technology used to execute it. Prefect, Dagster, Airflow and Luigi solve a different problem: they are orchestration frameworks, whereas DAGrunner is intended to remain independent of any particular orchestration or scheduling solution.
-
-### What do I need to execute my graph with DAGrunner?
-
-- A Python environment containing NetworkX and a supported scheduler (see [schedulers](#schedulers)).
-- A graph consisting of nodes, their associated attributes (collectively referred to as settings), and edges defining the connectivity between them.
-
-The example below defines a simple graph that starts with a node returning 0, passes the result to a node that adds 2, and then to a final node that adds 5, producing a final result of 7:
-
-```python
-def add(*arg, const=0):
-    return sum(arg) + const
-
-node0 = 'a'
-node1 = 'b'
-node2 = 'c'
-
-settings = {
-    node0: {'call': (lambda : 0,)}
-    node1: {'call': (add, const=2)}
-    node2: {'call': (add, const=5)}
-}
-edges = [
-    [node0, node1],
-    [node1, node2],
-]
-
-graph = ExecuteGraph((edges, settings))
-graph()
-```
-
-While this example is intentionally simple, node execution logic can be arbitrarily complex. See [Example DAGrunner usage](#example-dagrunner-usage) for more advanced examples.
+See [here](FAQ.md)
 
 ## Logo
 
