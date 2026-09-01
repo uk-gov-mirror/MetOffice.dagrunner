@@ -6,17 +6,7 @@
 ![PR CI status](https://github.com/MetOffice/dagrunner/actions/workflows/tests.yml/badge.svg)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-<img src="docs/logo.svg" alt="dagrunner_icon" width=200px>
-<svg xmlns="http://www.w3.org/2000/svg" width="335" height="200" viewBox="0 -60 335 200">
-  <text
-    x="10"
-    y="60"
-    font-size="60"
-    font-weight="700"
-    fill="#929292">
-    DAGrunner
-  </text>
-</svg>
+<img src="docs/logo_wtitle.svg" alt="dagrunner_icon" width=400px>
 
 DAGrunner provides an abstraction layer between an execution Directed Acyclic Graph (DAG) and the scheduler used to run it. Rather than coupling workflows to scheduler-specific APIs and execution models, DAGrunner represents execution graphs as [NetworkX](https://networkx.org/en/) graphs that can be executed using any supported back end, such as [Dask](https://www.dask.org/) or [Ray](https://docs.ray.io/en/latest/index.html). This separation of concerns allows scheduling technologies to evolve or be replaced without requiring changes to the workflow graph, making the approach valuable regardless of future orchestration frameworks or execution technologies.
 
