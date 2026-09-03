@@ -14,7 +14,7 @@ Beyond its core abstraction layer, DAGrunner provides scheduler-agnostic tooling
 
 ## Documentation
 
-DAGrunner documentation is written in markdown so it renders natively on GitHub and in popular IDEs. Reference documentation is generated from the codebase as markdown via [docs/gen_docs](docs/gen_docs). These generated docs are built automatically in continuous integration and should not be included in code changes.
+DAGrunner documentation is written in markdown so it renders natively on GitHub and in popular IDEs. Reference documentation is generated from the codebase as markdown via [docs/gen_docs](docs/gen_docs). These generated docs are built automatically with continuous integration and should not be included in code changes.
 
 ## API reference
 
